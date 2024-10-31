@@ -1,0 +1,11 @@
+maria 24
+
+bad string
+likeclient 23 likeclient
+
+dima 22
+kate 32
+duke 18
+
+storm 25
+speak 23

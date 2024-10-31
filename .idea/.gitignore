@@ -1,0 +1,30 @@
+*.class
+*.log
+.DS_Store
+
+# idea
+.idea/
+.idea_modules/
+
+# vs code
+.bloop/
+project/.bloop/
+project/project/
+.metals/
+.vscode/
+.bsp/
+.run/
+
+# sbt specific
+dist/*
+target/
+project/target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+
+src/main/resources/frontend

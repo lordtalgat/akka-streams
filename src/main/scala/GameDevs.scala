@@ -68,7 +68,9 @@ object GameDevs extends App {
   // User Sums
   val userSums = Flow[Transaction]
     .groupBy(100, _.userId)
-    .fold((0, 0.0)) { case ((_, sum), tran) => (tran.userId, sum + tran.amount) }
+    .fold((0, 0.0)) { case ((_, sum), tran) =>
+      (tran.userId, sum + tran.amount)
+    }
     .mergeSubstreams
 
   val userSumSink = Sink.foreach[(Int, Double)] { case (userId, sum) =>
@@ -78,7 +80,9 @@ object GameDevs extends App {
   // Count Number Transactions
   val userNumberTransactions = Flow[Transaction]
     .groupBy(100, _.userId)
-    .fold((0, 0)) { case ((_, count), tran) => (tran.userId, count + 1) }
+    .fold((0, 0)) { case ((_, count), tran) =>
+      (tran.userId, count + 1)
+    }
     .mergeSubstreams
 
   val userNumberSink = Sink.foreach[(Int, Int)] { case (userId, count) =>

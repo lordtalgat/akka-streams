@@ -1,0 +1,27 @@
+[
+  {
+    "userId": 1,
+    "amount": 25.86,
+    "timestamp": "2024-01-01T20:28:39Z"
+  },
+  {
+    "userId": 10,
+    "amount": 335.18,
+    "timestamp": "2024-01-01T02:14:13Z"
+  },
+  {
+    "userId": 2,
+    "amount": 488.09,
+    "timestamp": "2024-01-01T01:13:03Z"
+  },
+  {
+    "userId": 5,
+    "amount": 24.67,
+    "timestamp": "2024-01-01T08:28:38Z"
+  },
+  {
+    "userId": 5,
+    "amount": 168.21,
+    "timestamp": "2024-01-01T21:00:39Z"
+  }
+]

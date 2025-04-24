@@ -1,3 +1,3 @@
-akka streams by scala 2 examples
+akka streams by scala 3 examples
 
-run Main_First and SecondExapmle
+run Main_First, SecondExapmle or GameDevs

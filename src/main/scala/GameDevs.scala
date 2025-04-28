@@ -24,16 +24,12 @@ import scala.concurrent.Future
 //Hour 2024-01-01T21:00Z total sum: 168.21
 //Hour 2024-01-01T08:00Z total sum: 24.67
 //Hour 2024-01-01T01:00Z total sum: 488.09
-//User 2 transaction numbers: 1
-//User 2 sum: 488.09
+//User 2 sum: 488.09 and count: 1
 //Hour 2024-01-01T02:00Z total sum: 335.18
-//User 10 transaction numbers: 1
-//User 10 sum: 335.18
+//User 10 sum: 335.18 and count: 1
 //Hour 2024-01-01T20:00Z total sum: 25.86
-//User 1 transaction numbers: 1
-//User 1 sum: 25.86
-//User 5 transaction numbers: 2
-//User 5 sum: 192.88
+//User 1 sum: 25.86 and count: 1
+//User 5 sum: 192.88 and count: 2
 
 object GameDevs extends App {
   case class Transaction(userId: Int, amount: Double, timestamp: ZonedDateTime)
@@ -66,27 +62,15 @@ object GameDevs extends App {
     .mapConcat(identity)
 
   // User Sums
-  val userSums = Flow[Transaction]
+  val userSumsAndCount = Flow[Transaction]
     .groupBy(100, _.userId)
-    .fold((0, 0.0)) { case ((_, sum), tran) =>
-      (tran.userId, sum + tran.amount)
+    .fold((0, 0.0, 0)) { case ((_, sum, count), tran) =>
+      (tran.userId, sum + tran.amount, count + 1)
     }
     .mergeSubstreams
 
-  val userSumSink = Sink.foreach[(Int, Double)] { case (userId, sum) =>
-    println(s"User $userId sum: $sum")
-  }
-
-  // Count Number Transactions
-  val userNumberTransactions = Flow[Transaction]
-    .groupBy(100, _.userId)
-    .fold((0, 0)) { case ((_, count), tran) =>
-      (tran.userId, count + 1)
-    }
-    .mergeSubstreams
-
-  val userNumberSink = Sink.foreach[(Int, Int)] { case (userId, count) =>
-    println(s"User $userId transaction numbers: $count")
+  val userSumAndCountSink = Sink.foreach[(Int, Double, Int)] { case (userId, sum, count) =>
+    println(s"User $userId sum: $sum and count: $count")
   }
 
   // Total Transactions By Hour
@@ -105,15 +89,14 @@ object GameDevs extends App {
   val graph = RunnableGraph.fromGraph(GraphDSL.create() { implicit builder =>
     import GraphDSL.Implicits._
 
-    val broadcast = builder.add(Broadcast[Transaction](3))
+    val broadcast = builder.add(Broadcast[Transaction](2))
 
     val src = builder.add(source)
 
     src ~> broadcast.in
 
-    broadcast.out(0) ~> userSums ~> userSumSink
-    broadcast.out(1) ~> userNumberTransactions ~> userNumberSink
-    broadcast.out(2) ~> totalTransactionsByHour ~> totalTransactionsByHourSink
+    broadcast.out(0) ~> userSumsAndCount ~> userSumAndCountSink
+    broadcast.out(1) ~> totalTransactionsByHour ~> totalTransactionsByHourSink
 
     ClosedShape
   })
